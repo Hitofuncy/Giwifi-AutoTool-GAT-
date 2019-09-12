@@ -1,0 +1,15 @@
+C:\Users\XRoyal\source\repos\GiWifi_LoginX\GiWifi_LoginX\bin\Debug\GiWifi_LoginX.exe.config
+C:\Users\XRoyal\source\repos\GiWifi_LoginX\GiWifi_LoginX\bin\Debug\GiWifi_LoginX.exe
+C:\Users\XRoyal\source\repos\GiWifi_LoginX\GiWifi_LoginX\bin\Debug\GiWifi_LoginX.pdb
+C:\Users\XRoyal\source\repos\GiWifi_LoginX\GiWifi_LoginX\obj\Debug\GiWifi_LoginX.csprojAssemblyReference.cache
+C:\Users\XRoyal\source\repos\GiWifi_LoginX\GiWifi_LoginX\obj\Debug\GiWifi_LoginX.Form1.resources
+C:\Users\XRoyal\source\repos\GiWifi_LoginX\GiWifi_LoginX\obj\Debug\GiWifi_LoginX.Properties.Resources.resources
+C:\Users\XRoyal\source\repos\GiWifi_LoginX\GiWifi_LoginX\obj\Debug\GiWifi_LoginX.csproj.GenerateResource.cache
+C:\Users\XRoyal\source\repos\GiWifi_LoginX\GiWifi_LoginX\obj\Debug\GiWifi_LoginX.csproj.CoreCompileInputs.cache
+C:\Users\XRoyal\source\repos\GiWifi_LoginX\GiWifi_LoginX\obj\Debug\GiWifi_LoginX.exe
+C:\Users\XRoyal\source\repos\GiWifi_LoginX\GiWifi_LoginX\obj\Debug\GiWifi_LoginX.pdb
+C:\Users\XRoyal\source\repos\GiWifi_LoginX\GiWifi_LoginX\bin\Debug\CSkin.dll
+C:\Users\XRoyal\source\repos\GiWifi_LoginX\GiWifi_LoginX\obj\Debug\GiWifi_LoginX.csproj.CopyComplete
+C:\Users\XRoyal\source\repos\GiWifi_LoginX\GiWifi_LoginX\obj\Debug\GiWifi_LoginX.LoginData.resources
+C:\Users\XRoyal\source\repos\GiWifi_LoginX\GiWifi_LoginX\obj\Debug\GiWifi_LoginX.Setting_OverTime.resources
+C:\Users\XRoyal\source\repos\GiWifi_LoginX\GiWifi_LoginX\obj\Debug\GiWifi_LoginX.About.resources

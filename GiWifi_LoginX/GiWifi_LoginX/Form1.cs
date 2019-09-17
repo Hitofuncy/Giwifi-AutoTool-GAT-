@@ -46,13 +46,22 @@ namespace GiWifi_LoginX
                 return;
             }
             LoginBW.Navigate(new Uri("http://login.gwifi.com.cn/cmps/admin.php/api/login"));
+            
             timeOut(1500);
             HtmlElement username = LoginBW.Document.GetElementById("first_name");
-            username.SetAttribute("value", LoginInternet.loginUser);
             HtmlElement password = LoginBW.Document.GetElementById("first_password");
-            password.SetAttribute("value", LoginInternet.UserPassword);
             HtmlElement login = LoginBW.Document.GetElementById("first_button");
-            login.InvokeMember("click");
+
+            if (username != null && password != null && login != null)
+            {
+                username.SetAttribute("value", LoginInternet.loginUser);
+                password.SetAttribute("value", LoginInternet.UserPassword);
+                login.InvokeMember("click");
+            }
+            else
+            {
+                MessageBox.Show("系统检测到你可能未连接Giwifi认证网络，或不处于Giwifi网络环境之下。");
+            }
         }
 
         private void InternetLight() // ## 主页的连接灯  绿色代表已经连接上   红色代表无法连接   仅有在无法连接的条件下才能执行连接按钮。

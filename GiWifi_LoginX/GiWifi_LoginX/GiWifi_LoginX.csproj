@@ -34,7 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CSkin">
-      <HintPath>..\..\..\..\Desktop\常规开发\CSkin.dll</HintPath>
+      <HintPath>C:\Users\XRoyal\Desktop\常规开发\CSkin.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

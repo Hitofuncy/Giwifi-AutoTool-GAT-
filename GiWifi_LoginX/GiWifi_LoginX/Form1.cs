@@ -61,6 +61,7 @@ namespace GiWifi_LoginX
             else
             {
                 MessageBox.Show("系统检测到你可能未连接Giwifi认证网络，或不处于Giwifi网络环境之下。");
+
             }
         }
 

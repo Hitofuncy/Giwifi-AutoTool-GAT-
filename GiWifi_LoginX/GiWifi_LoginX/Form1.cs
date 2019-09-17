@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using System.IO;
 using mshtml;
 
-// Giwifi 模拟连接软件 Preview1.0
+// Giwifi 模拟连接软件 Preview2.1
 
 namespace GiWifi_LoginX
 {
@@ -16,8 +16,7 @@ namespace GiWifi_LoginX
             InitializeComponent();
             InitData();
         }
-
-        private void Test()// ##测试数据
+        private void NowLogin()// ## 登入Giwifi函数
         {
             try
             {
@@ -61,10 +60,9 @@ namespace GiWifi_LoginX
             }
             else
             {
-                MessageBox.Show("系统检测到你可能未连接Giwifi认证网络，或不处于Giwifi网络环境之下。");
+                MessageBox.Show("系统检测到你可能未连接Giwifi认证网络，或不处于Giwifi网络环境之下。如果你打开代理程序，请调整到PAC模式或关闭状态。","登录提示",MessageBoxButtons.OK,MessageBoxIcon.Information);
             }
         }
-
         private void InternetLight() // ## 主页的连接灯  绿色代表已经连接上   红色代表无法连接   仅有在无法连接的条件下才能执行连接按钮。
         {
             if (LoginInternet.checkInternetLink())
@@ -80,21 +78,10 @@ namespace GiWifi_LoginX
                 label4.Text = "未连接";
             }
         }
-
         public void InitData() //## 初始化INI数据
         {
-            bool isFile = System.IO.File.Exists(System.IO.Directory.GetCurrentDirectory() + "\\Setting.ini");
-            if (isFile == true) return;
-            INIFile op = new INIFile(System.IO.Directory.GetCurrentDirectory() + "\\Setting.ini");
-            op.IniWriteValue("MainWindows", "AutoLogin", "false");
-            op.IniWriteValue("MainWindows", "CheckInternetMethod", "1");
-            op.IniWriteValue("AutoLoginServer", "Delay", "-1");
-            op.IniWriteValue("AutoLoginServer", "AutoLoginSwitch", "自动连接开关");
-            op.IniWriteValue("AutoLoginServer", "UserAccount", "88888888889");
-            op.IniWriteValue("AutoLoginServer", "UserAccountPassWord", "");
-
+            INIFile.InitThisDatas();
         }
-
         private void SettingNowLoading()//##启动程序后加载配置文件。
         {
             bool isFile = System.IO.File.Exists(System.IO.Directory.GetCurrentDirectory() + "\\Setting.ini");
@@ -149,20 +136,17 @@ namespace GiWifi_LoginX
                 InitData();
             }
         }
-
-        private void Form1_Load(object sender, EventArgs e)
+        private void Form1_Load(object sender, EventArgs e)// ## 程序加载时操作
         {
             //LoginBW.Visible = false; // 显示/关闭 浏览器
             LoginBW.ScriptErrorsSuppressed = true;
             InternetLight();
             SettingNowLoading();
         }
-
-        private void SkinButton2_Click(object sender, EventArgs e)
+        private void SkinButton2_Click(object sender, EventArgs e) // ##重新检测网络按钮
         {
             InternetLight();
         }
-
         private void timeOut(int se)//## 延迟函数，程序正常运行
         {
             int start = Environment.TickCount;
@@ -171,17 +155,15 @@ namespace GiWifi_LoginX
                 Application.DoEvents();
             }
         }
-
         private void SkinButton1_Click(object sender, EventArgs e)//## 执行连接的按钮
         {
             if (LoginInternet.checkInternetLink()) { return; } //## 检查连接情况
             
-            Test(); // 调用测试方法
+            NowLogin(); // 调用测试方法
             LoginLongCheck.Enabled = true; // 执行时钟扫描 防止误报连接情况
             SettingNowLoading();
             
         }
-
         private void SkinButton3_Click(object sender, EventArgs e) //## 循环检测的开关
         {
             INIFile ope = new INIFile(System.IO.Directory.GetCurrentDirectory() + "\\Setting.ini");
@@ -190,7 +172,7 @@ namespace GiWifi_LoginX
                 label8.Text = ope.IniReadValue("AutoLoginServer", "Delay");
                 if (int.Parse(label8.Text) < 0)
                 {
-                    MessageBox.Show("警告！你未设置时延信息。","温馨提示",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                    MessageBox.Show("警告！你未设置时延信息。或未执行页面更新操作。","温馨提示",MessageBoxButtons.OK,MessageBoxIcon.Error);
                     return;
                 }
                 label7.Text = "是";
@@ -214,14 +196,20 @@ namespace GiWifi_LoginX
             if (!LoginInternet.checkInternetLink()) { return; }
 
             LoginBW.Url = new Uri("http://down.gwifi.com.cn/");
+            MessageBox.Show("1");
             timeOut(1500);
             IHTMLDocument2 id2 = LoginBW.Document.DomDocument as IHTMLDocument2;
             IHTMLWindow2 win = id2.parentWindow;
-            win.execScript("loginout()", "javascript");
-            timeOut(2000);
+            try { win.execScript("loginout()", "javascript"); }
+            catch(Exception)
+            {
+                MessageBox.Show("系统检测到你可能未连接Giwifi认证网络，或不处于Giwifi网络环境之下。如果你打开代理程序，请调整到PAC模式或关闭状态。", "登录提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+           
+            timeOut(2000); MessageBox.Show("3");
             InternetLight(); // 刷新
         }
-
         private void LoginLongCheck_Tick(object sender, EventArgs e) //## 延时缓冲判断连接成功函数  解决误判 无法连接。
         {
             if (--Xtime <= 0)
@@ -236,17 +224,14 @@ namespace GiWifi_LoginX
                 LoginLongCheck.Enabled = false;
             }
         }
-
         private void 设置登入信息ToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             new LoginData().Show();
         }
-
         private void 设置自动检测处理ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new Setting_OverTime().ShowDialog();
         }
-
         private void 初始化程序配置ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string filePath = System.IO.Directory.GetCurrentDirectory() + "\\Setting.ini";
@@ -257,7 +242,6 @@ namespace GiWifi_LoginX
             InitData();
             SettingNowLoading();
         }
-
         private void RadioButton1_CheckedChanged(object sender, EventArgs e)
         {
             INIFile ope = new INIFile(System.IO.Directory.GetCurrentDirectory() + "\\Setting.ini");
@@ -268,7 +252,6 @@ namespace GiWifi_LoginX
                 ope.IniWriteValue("MainWindows", "CheckInternetMethod", "1");
             }
         }
-
         private void RadioButton2_CheckedChanged(object sender, EventArgs e)
         {
             INIFile ope = new INIFile(System.IO.Directory.GetCurrentDirectory() + "\\Setting.ini");
@@ -278,17 +261,14 @@ namespace GiWifi_LoginX
                 ope.IniWriteValue("MainWindows", "CheckInternetMethod", "2");
             }
         }
-
         private void SkinButton5_Click(object sender, EventArgs e)
         {
             SettingNowLoading();
         }
-
         private void 关于制作ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new About().Show();
         }
-
         private void Loop_Tick(object sender, EventArgs e)
         {
             SkinButton1_Click(null, null);

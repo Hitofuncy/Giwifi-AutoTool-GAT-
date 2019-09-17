@@ -47,12 +47,13 @@
             // textBox1
             // 
             this.textBox1.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.textBox1.Location = new System.Drawing.Point(119, 8);
+            this.textBox1.Location = new System.Drawing.Point(74, 28);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(260, 90);
             this.textBox1.TabIndex = 1;
-            this.textBox1.Text = "本程序本意是方便用户登录的操作，仅提供为学习上进行交流，禁止转卖出售。\r\n原版开发人员是107\r\n\r\n开发人员是很乖很听话的哟";
+            this.textBox1.Text = "本程序本意是方便用户登录的操作，仅提供为学习上进行交流，禁止转卖出售。\r\n原版开发人员是107\r\ngithub.com/hitofuncy\r\n\r\n开发人员是很乖很" +
+    "听话的哟";
             // 
             // label2
             // 
@@ -72,7 +73,7 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(53, 16);
             this.label3.TabIndex = 0;
-            this.label3.Text = "1.0.1";
+            this.label3.Text = "2.0.1";
             // 
             // About
             // 

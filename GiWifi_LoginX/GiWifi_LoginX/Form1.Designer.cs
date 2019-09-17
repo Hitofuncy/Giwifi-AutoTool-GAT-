@@ -65,7 +65,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(311, 206);
+            this.label1.Location = new System.Drawing.Point(311, 216);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(53, 12);
             this.label1.TabIndex = 0;
@@ -73,7 +73,7 @@
             // 
             // LoginBW
             // 
-            this.LoginBW.Location = new System.Drawing.Point(322, 127);
+            this.LoginBW.Location = new System.Drawing.Point(324, 107);
             this.LoginBW.MinimumSize = new System.Drawing.Size(20, 20);
             this.LoginBW.Name = "LoginBW";
             this.LoginBW.ScrollBarsEnabled = false;
@@ -85,13 +85,15 @@
             // skinButton1
             // 
             this.skinButton1.BackColor = System.Drawing.Color.Transparent;
+            this.skinButton1.BaseColor = System.Drawing.Color.Gold;
             this.skinButton1.ControlState = CCWin.SkinClass.ControlState.Normal;
             this.skinButton1.DownBack = null;
-            this.skinButton1.Location = new System.Drawing.Point(12, 168);
+            this.skinButton1.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.skinButton1.Location = new System.Drawing.Point(191, 169);
             this.skinButton1.MouseBack = null;
             this.skinButton1.Name = "skinButton1";
             this.skinButton1.NormlBack = null;
-            this.skinButton1.Size = new System.Drawing.Size(173, 35);
+            this.skinButton1.Size = new System.Drawing.Size(173, 41);
             this.skinButton1.TabIndex = 3;
             this.skinButton1.Text = "登入";
             this.skinButton1.UseVisualStyleBackColor = false;
@@ -326,13 +328,15 @@
             // skinButton4
             // 
             this.skinButton4.BackColor = System.Drawing.Color.Transparent;
+            this.skinButton4.BaseColor = System.Drawing.Color.LightGreen;
             this.skinButton4.ControlState = CCWin.SkinClass.ControlState.Normal;
             this.skinButton4.DownBack = null;
-            this.skinButton4.Location = new System.Drawing.Point(191, 168);
+            this.skinButton4.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.skinButton4.Location = new System.Drawing.Point(12, 169);
             this.skinButton4.MouseBack = null;
             this.skinButton4.Name = "skinButton4";
             this.skinButton4.NormlBack = null;
-            this.skinButton4.Size = new System.Drawing.Size(173, 35);
+            this.skinButton4.Size = new System.Drawing.Size(173, 41);
             this.skinButton4.TabIndex = 3;
             this.skinButton4.Text = "登出";
             this.skinButton4.UseVisualStyleBackColor = false;
@@ -360,10 +364,10 @@
             this.radioButton2.AutoSize = true;
             this.radioButton2.Location = new System.Drawing.Point(195, 146);
             this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(143, 16);
+            this.radioButton2.Size = new System.Drawing.Size(167, 16);
             this.radioButton2.TabIndex = 11;
             this.radioButton2.TabStop = true;
-            this.radioButton2.Text = "检查网络方法2 WinAPI";
+            this.radioButton2.Text = "检查网络方法2 WebRequest";
             this.radioButton2.UseVisualStyleBackColor = true;
             this.radioButton2.CheckedChanged += new System.EventHandler(this.RadioButton2_CheckedChanged);
             // 
@@ -390,7 +394,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(373, 222);
+            this.ClientSize = new System.Drawing.Size(373, 234);
             this.Controls.Add(this.radioButton2);
             this.Controls.Add(this.radioButton1);
             this.Controls.Add(this.textBox1);

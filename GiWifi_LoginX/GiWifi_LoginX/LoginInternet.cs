@@ -33,8 +33,17 @@ namespace GiWifi_LoginX
         private extern static bool InternetGetConnectedState(out int connDescription, int ReservedValue);
         private static bool checkInternetMethod_02()
         {
-            int Desc;
-            return InternetGetConnectedState(out Desc, 0);
+            string url = "http://www.baidu.com";
+            try
+            {
+                System.Net.WebRequest myRequest = System.Net.WebRequest.Create(url);
+                System.Net.WebResponse myResponse = myRequest.GetResponse();
+            }
+            catch (System.Net.WebException)
+            {
+                return false;
+            }
+            return true;
         }
 
         public static bool checkInternetLink()

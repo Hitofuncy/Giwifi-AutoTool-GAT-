@@ -49,4 +49,18 @@ public class INIFile
             IniWriteValue(Section,null,null);
         }
 
+    public static void InitThisDatas() //## 初始化INI数据
+    {
+        bool isFile = System.IO.File.Exists(System.IO.Directory.GetCurrentDirectory() + "\\Setting.ini");
+        if (isFile == true) return;
+        INIFile op = new INIFile(System.IO.Directory.GetCurrentDirectory() + "\\Setting.ini");
+        op.IniWriteValue("MainWindows", "AutoLogin", "false");
+        op.IniWriteValue("MainWindows", "CheckInternetMethod", "1");
+        op.IniWriteValue("AutoLoginServer", "Delay", "-1");
+        op.IniWriteValue("AutoLoginServer", "AutoLoginSwitch", "自动连接开关");
+        op.IniWriteValue("AutoLoginServer", "UserAccount", "88888888889");
+        op.IniWriteValue("AutoLoginServer", "UserAccountPassWord", "");
+
     }
+
+}

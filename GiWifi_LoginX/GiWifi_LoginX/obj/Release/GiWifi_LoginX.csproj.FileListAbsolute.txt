@@ -27,3 +27,5 @@ F:\GitHub\ObservingThingsX\GiWifi_LoginX\GiWifi_LoginX\obj\Release\GiWifi_LoginX
 F:\GitHub\ObservingThingsX\GiWifi_LoginX\GiWifi_LoginX\obj\Release\GiWifi_LoginX.csproj.CopyComplete
 F:\GitHub\ObservingThingsX\GiWifi_LoginX\GiWifi_LoginX\obj\Release\GiWifi_LoginX.exe
 F:\GitHub\ObservingThingsX\GiWifi_LoginX\GiWifi_LoginX\obj\Release\GiWifi_LoginX.pdb
+F:\GitHub\ObservingThingsX\GiWifi_LoginX\GiWifi_LoginX\bin\Release\WatiN.Core.dll
+F:\GitHub\ObservingThingsX\GiWifi_LoginX\GiWifi_LoginX\bin\Release\WatiN.Core.xml

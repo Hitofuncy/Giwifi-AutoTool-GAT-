@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
+using mshtml;
 
 // Giwifi 模拟连接软件 Preview1.0
 
@@ -61,7 +62,6 @@ namespace GiWifi_LoginX
             else
             {
                 MessageBox.Show("系统检测到你可能未连接Giwifi认证网络，或不处于Giwifi网络环境之下。");
-
             }
         }
 
@@ -212,11 +212,14 @@ namespace GiWifi_LoginX
         {
             
             if (!LoginInternet.checkInternetLink()) { return; }
-            //LoginBW.Navigate(new Uri("http://down.gwifi.com.cn/",System.UriKind.Absolute)); // http://down.gwifi.com.cn/
 
-            //HtmlDocument doc = LoginBW.Document;
-            //LoginBW.Document.InvokeScript("loginout");
-            MessageBox.Show("此功能因为官方限制无法在此版本运行。下一版本添加");
+            LoginBW.Url = new Uri("http://down.gwifi.com.cn/");
+            timeOut(1500);
+            IHTMLDocument2 id2 = LoginBW.Document.DomDocument as IHTMLDocument2;
+            IHTMLWindow2 win = id2.parentWindow;
+            win.execScript("loginout()", "javascript");
+            timeOut(2000);
+            InternetLight(); // 刷新
         }
 
         private void LoginLongCheck_Tick(object sender, EventArgs e) //## 延时缓冲判断连接成功函数  解决误判 无法连接。

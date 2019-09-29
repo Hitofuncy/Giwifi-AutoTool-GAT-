@@ -9,7 +9,7 @@
 
 # Copyright
 
-Copyright yummyCarrot(huyuzhe)  
+Copyright hitofuncy(wuzusong)  
 
 My Github Location : [Hitofuncy Github](https://github.com/Hitofuncy)
 

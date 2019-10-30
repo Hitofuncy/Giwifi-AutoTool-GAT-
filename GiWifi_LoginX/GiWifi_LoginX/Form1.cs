@@ -83,8 +83,6 @@ namespace GiWifi_LoginX
 
         public Form1()//##构造方法
         {
-            init();
-
             this.XTheme = new CCWin.Skin_DevExpress();
             InitializeComponent();
             InitData();
@@ -249,6 +247,7 @@ namespace GiWifi_LoginX
             LoginBW.ScriptErrorsSuppressed = true;
             InternetLight();
             SettingNowLoading();
+            init();//修改
         }
 
         private void SkinButton2_Click(object sender, EventArgs e)

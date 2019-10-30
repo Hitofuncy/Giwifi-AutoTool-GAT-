@@ -3,6 +3,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
 using mshtml;
+using NativeWifi;
+using System.Collections.Generic;
 
 // Giwifi 模拟连接软件 Preview1.0
 
@@ -10,15 +12,95 @@ namespace GiWifi_LoginX
 {
     public partial class Form1 : CCWin.Skin_DevExpress
     {
+
+        //自动连接giwifi参数表 （有存储网络的列表 ，有网络的接口，还有就是需要连接的网络（配置文件中可以调节））
+        private List<Wlan.WlanAvailableNetwork> NetWorkList = new List<Wlan.WlanAvailableNetwork>();
+        private WlanClient.WlanInterface WlanIface;
+        private string wifiname = "QIT_GiWiFi"; // 因为windows10 在程序中很可能一个wifi都扫描不出来 必须点击右下角wifi图标扫描后才能扫出。这就麻烦必须记录信息
+
+        //记录网卡信息（方便后期检查网络连接的情况）
+        private Wlan.WlanNotificationData notifyData;
+        private Wlan.WlanConnectionNotificationData connNotifyData;
+
+        void WlanIface_WlanConnectionNotification(Wlan.WlanNotificationData notifyData, Wlan.WlanConnectionNotificationData connNotifyData)
+        {
+            this.notifyData = notifyData;
+            this.connNotifyData = connNotifyData;
+            if (notifyData.notificationSource == NativeWifi.Wlan.WlanNotificationSource.ACM)
+            {
+                //连接失败
+                if ((NativeWifi.Wlan.WlanNotificationCodeAcm)notifyData.NotificationCode == NativeWifi.Wlan.WlanNotificationCodeAcm.ConnectionAttemptFail)
+                {
+                    WlanIface.DeleteProfile(connNotifyData.profileName);
+                }
+            }
+
+        }
+        private void LoadNetWork()
+        {
+
+            Wlan.WlanAvailableNetwork[] networks = WlanIface.GetAvailableNetworkList(0);
+            foreach (Wlan.WlanAvailableNetwork network in networks)
+            {
+                string SSID = WlanHelper.GetStringForSSID(network.dot11Ssid);
+
+                //只有存在Giwifi才会存储
+                if (SSID.Equals(wifiname)&&!network.flags.HasFlag(Wlan.WlanAvailableNetworkFlags.Connected)) // 刚才想的是能不能直接构造一个放进List 
+                {
+                    NetWorkList.Add(network); // 如果giwifi的信息不一样怎么办？那么根据名字查找总比按照固定参数找要好，因此暂时不动这个方法。
+                }
+            }
+        }
+        private void init()
+        {
+            WlanClient client = new WlanClient();
+            WlanIface = client.Interfaces[0];//一般就一个网卡，有2个没试过。
+            WlanIface.WlanConnectionNotification += WlanIface_WlanConnectionNotification;
+            LoadNetWork();
+        }
+
+        private void linkNetworkWifi()
+        {
+            if (NetWorkList.Count == 0) return;
+
+            Wlan.WlanAvailableNetwork wn = NetWorkList[0]; // 标记 只取第一个 要预判连接giwifi的相关条件在此数组之中
+
+            if (wn.securityEnabled && !WlanHelper.HasProfile(WlanIface, WlanHelper.GetStringForSSID(wn.dot11Ssid)))
+            {
+                MessageBox.Show("Giwifi存在不支持验证的网络条件，连接将会终止", "系统提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            else
+            {
+                WlanHelper.ConnetWifi(WlanIface, wn);
+            } // ohh
+
+            //登录条件开始头
+
+        }
+        //end
+
+
         public Form1()//##构造方法
         {
+            init();
+
             this.XTheme = new CCWin.Skin_DevExpress();
             InitializeComponent();
             InitData();
         }
+   
 
-        private void Test()// ##测试数据
+        private void Logingiwifiuser()// ##测试数据
         {
+            //如果网卡是正在连接的情况
+            while (!(NativeWifi.Wlan.WlanNotificationCodeMsm.Disconnected
+                == (NativeWifi.Wlan.WlanNotificationCodeMsm)this.notifyData.NotificationCode))
+            {
+                if ((NativeWifi.Wlan.WlanNotificationCodeMsm)this.notifyData.NotificationCode 
+                    == NativeWifi.Wlan.WlanNotificationCodeMsm.Connected)
+                    break;
+            }
             try
             {
                 long i = long.Parse(LoginInternet.loginUser);
@@ -47,8 +129,12 @@ namespace GiWifi_LoginX
                 return;
             }
             LoginBW.Navigate(new Uri("http://login.gwifi.com.cn/cmps/admin.php/api/login"));
-            
-            timeOut(1500);
+
+            while (LoginBW.ReadyState != WebBrowserReadyState.Complete) // 最新检查是否加载完毕替代延时
+            {
+                System.Windows.Forms.Application.DoEvents();
+            }
+
             HtmlElement username = LoginBW.Document.GetElementById("first_name");
             HtmlElement password = LoginBW.Document.GetElementById("first_password");
             HtmlElement login = LoginBW.Document.GetElementById("first_button");
@@ -61,7 +147,9 @@ namespace GiWifi_LoginX
             }
             else
             {
-                MessageBox.Show("系统检测到你可能未连接Giwifi认证网络，或不处于Giwifi网络环境之下。");
+                
+                MessageBox.Show("系统检测到程序可能不在giwifi环境之下，或开启代理","有几率是误报情况");
+                InternetLight();
             }
         }
 
@@ -69,13 +157,13 @@ namespace GiWifi_LoginX
         {
             if (LoginInternet.checkInternetLink())
             {
-                label3.BackColor = Color.Green;
+                label3.BackColor = Color.Aquamarine;
                 label4.ForeColor = Color.Green;
                 label4.Text = "连接成功";
             }
             else
             {
-                label3.BackColor = Color.Red;
+                label3.BackColor = Color.Crimson;
                 label4.ForeColor = Color.Red;
                 label4.Text = "未连接";
             }
@@ -92,6 +180,7 @@ namespace GiWifi_LoginX
             op.IniWriteValue("AutoLoginServer", "AutoLoginSwitch", "自动连接开关");
             op.IniWriteValue("AutoLoginServer", "UserAccount", "88888888889");
             op.IniWriteValue("AutoLoginServer", "UserAccountPassWord", "");
+            op.IniWriteValue("AutoLoginServer", "GiwifiName",wifiname);
 
         }
 
@@ -107,6 +196,10 @@ namespace GiWifi_LoginX
                 String Password = op.IniReadValue("AutoLoginServer", "UserAccountPassWord");//登入密码
                 String AutoLoginSwitch = op.IniReadValue("AutoLoginServer", "AutoLoginSwitch");
                 String Delay = op.IniReadValue("AutoLoginServer", "Delay");// 延时
+  
+                String wifiNames = op.IniReadValue("AutoLoginServer", "GiwifiName");
+                wifiname = wifiNames;
+               
 
                 //String AutoLogin = op.IniReadValue("MainWindows", "AutoLogin");// 是否是自动登录  封杀此功能
                 String CheckInternetMethod = op.IniReadValue("MainWindows", "CheckInternetMethod");//判断网路方法
@@ -173,13 +266,19 @@ namespace GiWifi_LoginX
         }
 
         private void SkinButton1_Click(object sender, EventArgs e)//## 执行连接的按钮
-        {
-            if (LoginInternet.checkInternetLink()) { return; } //## 检查连接情况
+        {//HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\NlaSvc\Parameters\Internet\EnableActiveProbing
+            GiwifiReg.settingregedt32(@"SYSTEM\CurrentControlSet\Services\NlaSvc\Parameters\Internet\", "EnableActiveProbing",0);
             
-            Test(); // 调用测试方法
+            if (LoginInternet.checkInternetLink()) { return; } //## 检查连接情况
+            linkNetworkWifi(); // 发出连接请求，未必就连上了 因此 254行出现误报情况就是这样的。所以要设置三状态 对未配置 已配置 占位配置  登出 和 登入要有安排
+
+
+
+            Logingiwifiuser(); // 执行连接
             LoginLongCheck.Enabled = true; // 执行时钟扫描 防止误报连接情况
             SettingNowLoading();
-            
+            GiwifiReg.unALLsettingregedt32();
+
         }
 
         private void SkinButton3_Click(object sender, EventArgs e) //## 循环检测的开关
@@ -214,9 +313,13 @@ namespace GiWifi_LoginX
             if (!LoginInternet.checkInternetLink()) { return; }
 
             LoginBW.Url = new Uri("http://down.gwifi.com.cn/");
-            timeOut(1500);
+            while (LoginBW.ReadyState != WebBrowserReadyState.Complete)
+            {
+                System.Windows.Forms.Application.DoEvents();
+            }
             IHTMLDocument2 id2 = LoginBW.Document.DomDocument as IHTMLDocument2;
             IHTMLWindow2 win = id2.parentWindow;
+            timeOut(2000);
             win.execScript("loginout()", "javascript");
             timeOut(2000);
             InternetLight(); // 刷新
@@ -292,6 +395,11 @@ namespace GiWifi_LoginX
         private void Loop_Tick(object sender, EventArgs e)
         {
             SkinButton1_Click(null, null);
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            GiwifiReg.unALLsettingregedt32();
         }
     }
 }

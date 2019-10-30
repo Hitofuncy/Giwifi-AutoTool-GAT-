@@ -10,11 +10,16 @@ using System.Windows.Forms;
 
 namespace GiWifi_LoginX
 {
-    public partial class About : Form
+    public partial class About : CCWin.CCSkinMain
     {
         public About()
         {
             InitializeComponent();
+        }
+
+        private void About_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

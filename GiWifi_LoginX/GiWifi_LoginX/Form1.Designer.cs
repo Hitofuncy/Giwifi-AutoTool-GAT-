@@ -58,6 +58,7 @@
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.skinButton5 = new CCWin.SkinControl.SkinButton();
             this.Loop = new System.Windows.Forms.Timer(this.components);
+            this.button1 = new System.Windows.Forms.Button();
             this.skinMenuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -75,13 +76,12 @@
             // 
             // LoginBW
             // 
-            this.LoginBW.Location = new System.Drawing.Point(24, 181);
+            this.LoginBW.Location = new System.Drawing.Point(14, 282);
             this.LoginBW.MinimumSize = new System.Drawing.Size(20, 20);
             this.LoginBW.Name = "LoginBW";
             this.LoginBW.ScrollBarsEnabled = false;
-            this.LoginBW.Size = new System.Drawing.Size(204, 36);
+            this.LoginBW.Size = new System.Drawing.Size(439, 20);
             this.LoginBW.TabIndex = 2;
-            this.LoginBW.Visible = false;
             this.LoginBW.WebBrowserShortcutsEnabled = false;
             // 
             // skinButton1
@@ -397,11 +397,23 @@
             // 
             this.Loop.Tick += new System.EventHandler(this.Loop_Tick);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(265, 34);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 12;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(460, 224);
+            this.ClientSize = new System.Drawing.Size(460, 230);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.LoginBW);
             this.Controls.Add(this.skinButton5);
             this.Controls.Add(this.skinButton2);
             this.Controls.Add(this.label1);
@@ -415,7 +427,6 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.skinButton4);
             this.Controls.Add(this.skinButton1);
-            this.Controls.Add(this.LoginBW);
             this.Controls.Add(this.skinMenuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MainMenuStrip = this.skinMenuStrip1;
@@ -464,6 +475,7 @@
         private System.Windows.Forms.ToolStripMenuItem 初始化程序配置ToolStripMenuItem;
         private CCWin.SkinControl.SkinButton skinButton5;
         private System.Windows.Forms.Timer Loop;
+        private System.Windows.Forms.Button button1;
     }
 }
 

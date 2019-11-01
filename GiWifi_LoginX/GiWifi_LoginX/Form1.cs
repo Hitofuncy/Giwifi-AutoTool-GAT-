@@ -5,13 +5,21 @@ using System.IO;
 using mshtml;
 using NativeWifi;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Net.NetworkInformation;
 
-// Giwifi 模拟连接软件 Preview1.0
+// Giwifi 模拟连接软件 RTM
 
 namespace GiWifi_LoginX
 {
     public partial class Form1 : CCWin.Skin_DevExpress
     {
+        [DllImport("KERNEL32.DLL", EntryPoint = "SetProcessWorkingSetSize", SetLastError = true, CallingConvention = CallingConvention.StdCall)]
+        internal static extern bool SetProcessWorkingSetSize(IntPtr pProcess, int dwMinimumWorkingSetSize, int dwMaximumWorkingSetSize);
+
+        [DllImport("KERNEL32.DLL", EntryPoint = "GetCurrentProcess", SetLastError = true, CallingConvention = CallingConvention.StdCall)]
+        internal static extern IntPtr GetCurrentProcess();
+
 
         //自动连接giwifi参数表 （有存储网络的列表 ，有网络的接口，还有就是需要连接的网络（配置文件中可以调节））
         private List<Wlan.WlanAvailableNetwork> NetWorkList = new List<Wlan.WlanAvailableNetwork>();
@@ -24,6 +32,9 @@ namespace GiWifi_LoginX
 
         void WlanIface_WlanConnectionNotification(Wlan.WlanNotificationData notifyData, Wlan.WlanConnectionNotificationData connNotifyData)
         {
+
+            
+            
             this.notifyData = notifyData;
             this.connNotifyData = connNotifyData;
             if (notifyData.notificationSource == NativeWifi.Wlan.WlanNotificationSource.ACM)
@@ -51,11 +62,18 @@ namespace GiWifi_LoginX
                 }
             }
         }
+        private WlanClient client;
         private void init()
         {
-            WlanClient client = new WlanClient();
+            client = new WlanClient();
             WlanIface = client.Interfaces[0];//一般就一个网卡，有2个没试过。
+            //if(client.Interfaces[0].info.isState == NativeWifi.Wlan.WlanInterfaceState.Connected)
+            //{
+
+            //}
             WlanIface.WlanConnectionNotification += WlanIface_WlanConnectionNotification;
+
+            
             LoadNetWork();
         }
 
@@ -91,13 +109,13 @@ namespace GiWifi_LoginX
 
         private void Logingiwifiuser()// ##测试数据
         {
-            //如果网卡是正在连接的情况
-            while (!(NativeWifi.Wlan.WlanNotificationCodeMsm.Disconnected
-                == (NativeWifi.Wlan.WlanNotificationCodeMsm)this.notifyData.NotificationCode))
+            //如果网卡是正在连接的情况   D//////////////////////////////////////////////////////////////////////////////////////////////////////////
+            if (client.Interfaces[0].NetworkInterface.OperationalStatus == OperationalStatus.Testing) 
+                MessageBox.Show("flag");
+            //timeOut(2000);
+            while (client.Interfaces[0].NetworkInterface.OperationalStatus == OperationalStatus.Down)
             {
-                if ((NativeWifi.Wlan.WlanNotificationCodeMsm)this.notifyData.NotificationCode 
-                    == NativeWifi.Wlan.WlanNotificationCodeMsm.Connected)
-                    break;
+                Application.DoEvents();
             }
             try
             {
@@ -126,7 +144,8 @@ namespace GiWifi_LoginX
                 MessageBox.Show("检测到登录名非法");
                 return;
             }
-            LoginBW.Navigate(new Uri("http://login.gwifi.com.cn/cmps/admin.php/api/login"));
+            LoginBW.Navigate(new Uri("http://login.gwifi.com.cn/cmps/admin.php/api/login"),false);
+            LoginBW.Refresh();
 
             while (LoginBW.ReadyState != WebBrowserReadyState.Complete) // 最新检查是否加载完毕替代延时
             {
@@ -141,14 +160,36 @@ namespace GiWifi_LoginX
             {
                 username.SetAttribute("value", LoginInternet.loginUser);
                 password.SetAttribute("value", LoginInternet.UserPassword);
+                // login.InvokeMember("click");
+              
+
+
                 login.InvokeMember("click");
             }
             else
             {
-                
+                LoginBW.Navigate(new Uri("http://login.gwifi.com.cn/cmps/admin.php/api/login"), false);
+                LoginBW.Refresh();
+                while (LoginBW.ReadyState != WebBrowserReadyState.Complete) // 最新检查是否加载完毕替代延时
+                {
+                    System.Windows.Forms.Application.DoEvents();
+                }
+                username = LoginBW.Document.GetElementById("first_name");
+                password = LoginBW.Document.GetElementById("first_password");
+                login = LoginBW.Document.GetElementById("first_button");
+
+                if (username != null && password != null && login != null)
+                {
+                    username.SetAttribute("value", LoginInternet.loginUser);
+                    password.SetAttribute("value", LoginInternet.UserPassword);
+                    login.InvokeMember("click");
+                    return;
+                }
+
                 MessageBox.Show("系统检测到程序可能不在giwifi环境之下，或开启代理","有几率是误报情况");
                 InternetLight();
             }
+            
         }
 
         private void InternetLight() // ## 主页的连接灯  绿色代表已经连接上   红色代表无法连接   仅有在无法连接的条件下才能执行连接按钮。
@@ -244,6 +285,7 @@ namespace GiWifi_LoginX
         private void Form1_Load(object sender, EventArgs e)
         {
             //LoginBW.Visible = false; // 显示/关闭 浏览器
+            GiwifiReg.RefreshIESettings("");
             LoginBW.ScriptErrorsSuppressed = true;
             InternetLight();
             SettingNowLoading();
@@ -268,14 +310,19 @@ namespace GiWifi_LoginX
         {//HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\NlaSvc\Parameters\Internet\EnableActiveProbing
             GiwifiReg.settingregedt32(@"SYSTEM\CurrentControlSet\Services\NlaSvc\Parameters\Internet\", "EnableActiveProbing",0);
             
+
             if (LoginInternet.checkInternetLink()) { return; } //## 检查连接情况
-            linkNetworkWifi(); // 发出连接请求，未必就连上了 因此 254行出现误报情况就是这样的。所以要设置三状态 对未配置 已配置 占位配置  登出 和 登入要有安排
+
+            
+            if(client.Interfaces[0].NetworkInterface.OperationalStatus == OperationalStatus.Down)//System.Net.NetworkInformationd.Op
+                linkNetworkWifi(); // 发出连接请求，未必就连上了 因此 254行出现误报情况就是这样的。所以要设置三状态 对未配置 已配置 占位配置  登出 和 登入要有安排
 
 
 
             Logingiwifiuser(); // 执行连接
             LoginLongCheck.Enabled = true; // 执行时钟扫描 防止误报连接情况
             SettingNowLoading();
+            
             GiwifiReg.unALLsettingregedt32();
 
         }
@@ -305,9 +352,10 @@ namespace GiWifi_LoginX
                 Loop.Enabled = false;
             }
         }
-        private int Xtime = 5;
+        private int Xtime = 20;
         private void SkinButton4_Click(object sender, EventArgs e) //## 断开连接函数
         {
+            
             
             if (!LoginInternet.checkInternetLink()) { return; }
 
@@ -318,17 +366,30 @@ namespace GiWifi_LoginX
             }
             IHTMLDocument2 id2 = LoginBW.Document.DomDocument as IHTMLDocument2;
             IHTMLWindow2 win = id2.parentWindow;
-            timeOut(2000);
-            win.execScript("loginout()", "javascript");
-            timeOut(2000);
+
+            try
+            {
+                win.execScript("loginout()", "javascript");
+            }
+            finally
+            {
+                GiwifiReg.unALLsettingregedt32();
+            }
+            //timeOut(2000);
+            LoginBW.Url = new Uri("http://down.gwifi.com.cn/");
+            while (LoginBW.ReadyState != WebBrowserReadyState.Complete)
+            {
+                System.Windows.Forms.Application.DoEvents();
+            }
             InternetLight(); // 刷新
+            GiwifiReg.unALLsettingregedt32();
         }
 
         private void LoginLongCheck_Tick(object sender, EventArgs e) //## 延时缓冲判断连接成功函数  解决误判 无法连接。
         {
             if (--Xtime <= 0)
             {
-                Xtime = 5;
+                Xtime = 20;
                 LoginLongCheck.Enabled = false;
                 return;
             }
@@ -399,6 +460,15 @@ namespace GiWifi_LoginX
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             GiwifiReg.unALLsettingregedt32();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            IntPtr pHandle = GetCurrentProcess();
+            SetProcessWorkingSetSize(pHandle, -1, -1);
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
         }
     }
 }

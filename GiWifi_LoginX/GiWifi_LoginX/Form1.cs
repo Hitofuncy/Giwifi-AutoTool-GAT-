@@ -1,12 +1,12 @@
-﻿using System;
-using System.Drawing;
-using System.Windows.Forms;
-using System.IO;
-using mshtml;
+﻿using mshtml;
 using NativeWifi;
+using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
+using System.Drawing;
+using System.IO;
 using System.Net.NetworkInformation;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 // Giwifi 模拟连接软件 RTM
 
@@ -33,8 +33,8 @@ namespace GiWifi_LoginX
         void WlanIface_WlanConnectionNotification(Wlan.WlanNotificationData notifyData, Wlan.WlanConnectionNotificationData connNotifyData)
         {
 
-            
-            
+
+
             this.notifyData = notifyData;
             this.connNotifyData = connNotifyData;
             if (notifyData.notificationSource == NativeWifi.Wlan.WlanNotificationSource.ACM)
@@ -56,7 +56,7 @@ namespace GiWifi_LoginX
                 string SSID = WlanHelper.GetStringForSSID(network.dot11Ssid);
 
                 //只有存在Giwifi才会存储
-                if (SSID.Equals(wifiname)&&!network.flags.HasFlag(Wlan.WlanAvailableNetworkFlags.Connected)) // 刚才想的是能不能直接构造一个放进List 
+                if (SSID.Equals(wifiname) && !network.flags.HasFlag(Wlan.WlanAvailableNetworkFlags.Connected)) // 刚才想的是能不能直接构造一个放进List 
                 {
                     NetWorkList.Add(network); // 如果giwifi的信息不一样怎么办？那么根据名字查找总比按照固定参数找要好，因此暂时不动这个方法。
                 }
@@ -73,7 +73,7 @@ namespace GiWifi_LoginX
             //}
             WlanIface.WlanConnectionNotification += WlanIface_WlanConnectionNotification;
 
-            
+
             LoadNetWork();
         }
 
@@ -105,12 +105,12 @@ namespace GiWifi_LoginX
             InitializeComponent();
             InitData();
         }
-   
+
 
         private void Logingiwifiuser()// ##测试数据
         {
             //如果网卡是正在连接的情况   D//////////////////////////////////////////////////////////////////////////////////////////////////////////
-            if (client.Interfaces[0].NetworkInterface.OperationalStatus == OperationalStatus.Testing) 
+            if (client.Interfaces[0].NetworkInterface.OperationalStatus == OperationalStatus.Testing)
                 MessageBox.Show("flag");
             //timeOut(2000);
             while (client.Interfaces[0].NetworkInterface.OperationalStatus == OperationalStatus.Down)
@@ -124,7 +124,7 @@ namespace GiWifi_LoginX
                 {
                     skinComboBox1.Text = "关闭循环检测";
                     SkinButton3_Click(null, null);
-                    MessageBox.Show("检测到用户名位数不正确","登录组件",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                    MessageBox.Show("检测到用户名位数不正确", "登录组件", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     skinComboBox1.Text = "关闭循环检测";
                     SkinButton3_Click(null, null);
                     return;
@@ -144,7 +144,7 @@ namespace GiWifi_LoginX
                 MessageBox.Show("检测到登录名非法");
                 return;
             }
-            LoginBW.Navigate(new Uri("http://login.gwifi.com.cn/cmps/admin.php/api/login"),false);
+            LoginBW.Navigate(new Uri("http://login.gwifi.com.cn/cmps/admin.php/api/login"), false);
             LoginBW.Refresh();
 
             while (LoginBW.ReadyState != WebBrowserReadyState.Complete) // 最新检查是否加载完毕替代延时
@@ -161,7 +161,7 @@ namespace GiWifi_LoginX
                 username.SetAttribute("value", LoginInternet.loginUser);
                 password.SetAttribute("value", LoginInternet.UserPassword);
                 // login.InvokeMember("click");
-              
+
 
 
                 login.InvokeMember("click");
@@ -186,10 +186,10 @@ namespace GiWifi_LoginX
                     return;
                 }
 
-                MessageBox.Show("系统检测到程序可能不在giwifi环境之下，或开启代理","有几率是误报情况");
+                MessageBox.Show("系统检测到程序可能不在giwifi环境之下，或开启代理", "有几率是误报情况");
                 InternetLight();
             }
-            
+
         }
 
         private void InternetLight() // ## 主页的连接灯  绿色代表已经连接上   红色代表无法连接   仅有在无法连接的条件下才能执行连接按钮。
@@ -219,7 +219,7 @@ namespace GiWifi_LoginX
             op.IniWriteValue("AutoLoginServer", "AutoLoginSwitch", "自动连接开关");
             op.IniWriteValue("AutoLoginServer", "UserAccount", "88888888889");
             op.IniWriteValue("AutoLoginServer", "UserAccountPassWord", "");
-            op.IniWriteValue("AutoLoginServer", "GiwifiName",wifiname);
+            op.IniWriteValue("AutoLoginServer", "GiwifiName", wifiname);
 
         }
 
@@ -235,10 +235,10 @@ namespace GiWifi_LoginX
                 String Password = op.IniReadValue("AutoLoginServer", "UserAccountPassWord");//登入密码
                 String AutoLoginSwitch = op.IniReadValue("AutoLoginServer", "AutoLoginSwitch");
                 String Delay = op.IniReadValue("AutoLoginServer", "Delay");// 延时
-  
+
                 String wifiNames = op.IniReadValue("AutoLoginServer", "GiwifiName");
                 wifiname = wifiNames;
-               
+
 
                 //String AutoLogin = op.IniReadValue("MainWindows", "AutoLogin");// 是否是自动登录  封杀此功能
                 String CheckInternetMethod = op.IniReadValue("MainWindows", "CheckInternetMethod");//判断网路方法
@@ -251,12 +251,12 @@ namespace GiWifi_LoginX
                     textBox1.Text = UserName;
                     LoginInternet.UserPassword = Password;
                     LoginInternet.InternetMethod = int.Parse(CheckInternetMethod);
-                    if(LoginInternet.InternetMethod == 1)
+                    if (LoginInternet.InternetMethod == 1)
                     {
                         radioButton1.Checked = true;
                         radioButton2.Checked = false;
                     }
-                    else if(LoginInternet.InternetMethod == 2)
+                    else if (LoginInternet.InternetMethod == 2)
                     {
                         radioButton2.Checked = true;
                         radioButton1.Checked = false;
@@ -271,7 +271,7 @@ namespace GiWifi_LoginX
                 }
                 catch (Exception)
                 {
-                    MessageBox.Show("读取配置文件发生错误！程式将会删除错误文件，请重新配置程式。","严重错误",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                    MessageBox.Show("读取配置文件发生错误！程式将会删除错误文件，请重新配置程式。", "严重错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     InitData();
                 }
             }
@@ -308,13 +308,13 @@ namespace GiWifi_LoginX
 
         private void SkinButton1_Click(object sender, EventArgs e)//## 执行连接的按钮
         {//HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\NlaSvc\Parameters\Internet\EnableActiveProbing
-            GiwifiReg.settingregedt32(@"SYSTEM\CurrentControlSet\Services\NlaSvc\Parameters\Internet\", "EnableActiveProbing",0);
-            
+            GiwifiReg.settingregedt32(@"SYSTEM\CurrentControlSet\Services\NlaSvc\Parameters\Internet\", "EnableActiveProbing", 0);
+
 
             if (LoginInternet.checkInternetLink()) { return; } //## 检查连接情况
 
-            
-            if(client.Interfaces[0].NetworkInterface.OperationalStatus == OperationalStatus.Down)//System.Net.NetworkInformationd.Op
+
+            if (client.Interfaces[0].NetworkInterface.OperationalStatus == OperationalStatus.Down)//System.Net.NetworkInformationd.Op
                 linkNetworkWifi(); // 发出连接请求，未必就连上了 因此 254行出现误报情况就是这样的。所以要设置三状态 对未配置 已配置 占位配置  登出 和 登入要有安排
 
 
@@ -322,7 +322,7 @@ namespace GiWifi_LoginX
             Logingiwifiuser(); // 执行连接
             LoginLongCheck.Enabled = true; // 执行时钟扫描 防止误报连接情况
             SettingNowLoading();
-            
+
             GiwifiReg.unALLsettingregedt32();
 
         }
@@ -335,7 +335,7 @@ namespace GiWifi_LoginX
                 label8.Text = ope.IniReadValue("AutoLoginServer", "Delay");
                 if (int.Parse(label8.Text) < 0)
                 {
-                    MessageBox.Show("警告！你未设置时延信息。","温馨提示",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                    MessageBox.Show("警告！你未设置时延信息。", "温馨提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
                 label7.Text = "是";
@@ -344,7 +344,7 @@ namespace GiWifi_LoginX
                 Loop.Interval = int.Parse(label8.Text);
                 Loop.Enabled = true;
             }
-            else if(skinComboBox1.Text == "关闭循环检测")
+            else if (skinComboBox1.Text == "关闭循环检测")
             {
                 label7.Text = "否";
                 label7.ForeColor = Color.Red;
@@ -355,8 +355,8 @@ namespace GiWifi_LoginX
         private int Xtime = 20;
         private void SkinButton4_Click(object sender, EventArgs e) //## 断开连接函数
         {
-            
-            
+
+
             if (!LoginInternet.checkInternetLink()) { return; }
 
             LoginBW.Url = new Uri("http://down.gwifi.com.cn/");
